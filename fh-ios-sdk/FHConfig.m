@@ -77,6 +77,7 @@
 - (NSString *)vendorId {
     NSUUID *vendorId = [[UIDevice currentDevice] identifierForVendor];
     NSString *uuid = [vendorId UUIDString];
+    NSLog(@"VENDRO_UUID:::::%@", uuid);
     return uuid;
 }
 
