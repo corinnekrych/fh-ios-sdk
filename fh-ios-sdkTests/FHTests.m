@@ -46,7 +46,7 @@
     [init execWithSuccess:success AndFailure:nil];
     [self waitForExpectationsWithTimeout:0.1 handler:nil];
 }
-/*
+
 - (void)testCloud {
     MockFHHttpClient *httpClient = [[MockFHHttpClient alloc] init];
 
@@ -91,7 +91,7 @@
 
 - (void)testAuth {
     MockFHHttpClient *httpClient = [[MockFHHttpClient alloc] init];
-    XCTestExpectation *expectation = [self expectationWithDescription:@"test init"];
+    //XCTestExpectation *expectation = [self expectationWithDescription:@"test init"];
     NSMutableDictionary *initRes = [NSMutableDictionary dictionary];
     NSMutableDictionary *innerP = [NSMutableDictionary dictionary];
     [innerP setValue:@"http://dev.test.example.com" forKey:@"development-url"];
@@ -115,14 +115,14 @@
         XCTAssertTrue(nil != [data valueForKey:@"sessionToken"],
                       @"Can not find sessionToken in init response");
         BOOL hasSession = [FH hasAuthSession];
-        [expectation fulfill];
+        //[expectation fulfill];
         XCTAssertTrue(hasSession);
     };
 
     [auth execWithSuccess:success AndFailure:nil];
-    [self waitForExpectationsWithTimeout:1 handler:nil];
+    //[self waitForExpectationsWithTimeout:1 handler:nil];
 }
-*/
+
 // the [FH getDefaultParamsAsHeaders] setup's default params
 // containing both raw values as well as json representation
 // of foundation collection clases. After JSON refactor, ensure
