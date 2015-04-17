@@ -85,7 +85,7 @@
     static NSString *UUID_KEY = @"FHUUID";
 
     NSString *app_uuid = [FHDataManager read:UUID_KEY];
-
+    NSLog(@"APP_UUID:::::%@", app_uuid);
     if (app_uuid == nil) {
         CFUUIDRef uuidRef = CFUUIDCreate(kCFAllocatorDefault);
         CFStringRef uuidString = CFUUIDCreateString(kCFAllocatorDefault, uuidRef);

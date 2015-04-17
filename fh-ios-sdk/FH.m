@@ -237,6 +237,8 @@ static Reachability *reachability;
     NSString *projectId = [appConfig getConfigValueForKey:@"projectid"];
     NSString *connectionTag = [appConfig getConfigValueForKey:@"connectiontag"];
     NSString *uuid = [appConfig uuid];
+    NSLog(@"GetDefaultParams:::%@", uuid);
+    
     NSMutableDictionary *fhparams = [[NSMutableDictionary alloc] init];
 
     fhparams[@"cuid"] = uuid;
