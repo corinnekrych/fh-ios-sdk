@@ -19,6 +19,7 @@ and store that in config
 #import "FHDefines.h"
 #import "FHInitRequest.h"
 #import "FHDataManager.h"
+#import "AeroGearPush.h"
 
 @implementation FH
 
@@ -83,6 +84,21 @@ static Reachability *reachability;
             sucornil(nil);
         }
     }
+}
+
++(void)pushRegister:(NSData*)deviceToken
+         AndSuccess:(void (^)(FHResponse *success))sucornil
+         AndFailure:(void (^)(FHResponse *failed))failornil {
+    AGDeviceRegistration* registration = [[AGDeviceRegistration alloc] initWithFile:@"fhconfig"];
+    [registration registerWithClientInfo:^(id<AGClientDeviceInformation> clientInfo) {
+        [clientInfo setDeviceToken:deviceToken];
+    } success:^{
+        sucornil([[FHResponse alloc] init]);
+    } failure:^(NSError *error) {
+        FHResponse* resp = [[FHResponse alloc] init];
+        [resp setError:error];
+        failornil(resp);
+    }];
 }
 
 + (BOOL)isOnline {

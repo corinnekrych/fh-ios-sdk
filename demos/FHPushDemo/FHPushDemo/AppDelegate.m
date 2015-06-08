@@ -1,5 +1,5 @@
 #import "AppDelegate.h"
-#import <AeroGear-Push/AeroGearPush.h>
+#import <FH/FH.h>
 
 @interface AppDelegate ()
 
@@ -57,40 +57,14 @@
 }
 
 - (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
-    // initialize "Registration helper" object using the
-    // base URL where the "AeroGear Unified Push Server" is running.
-    AGDeviceRegistration *registration =
     
-    // WARNING: make sure, you start JBoss with the -b 0.0.0.0 option, to bind on all interfaces
-    // from the iPhone, you can NOT use localhost :)
-    
-    [[AGDeviceRegistration alloc] initWithServerURL:[NSURL URLWithString:@"<# URL of the running AeroGear UnifiedPush Server #>"]];
-    
-    [registration registerWithClientInfo:^(id<AGClientDeviceInformation> clientInfo) {
-        // You need to fill the 'Variant Id' together with the 'Variant Secret'
-        // both received when performing the variant registration with the server.
-        [clientInfo setVariantID:@"<# Variant Id #>"];
-        [clientInfo setVariantSecret:@"<# Variant Secret #>"];
-        
-        // if the deviceToken value is nil, no registration will be performed
-        // and the failure callback is being invoked!
-        [clientInfo setDeviceToken:deviceToken];
-        
-        // apply the token, to identify THIS device
-        UIDevice *currentDevice = [UIDevice currentDevice];
-        
-        // --optional config--
-        // set some 'useful' hardware information params
-        [clientInfo setOperatingSystem:[currentDevice systemName]];
-        [clientInfo setOsVersion:[currentDevice systemVersion]];
-        [clientInfo setDeviceType: [currentDevice model]];
-        
-    } success:^() {
+    [FH pushRegister:deviceToken AndSuccess:^(FHResponse *success) {
         NSLog(@"Unified Push registration successful");
-        
-    } failure:^(NSError *error) {
-        NSLog(@"Unified Push registration Error: %@", error);
+    } AndFailure:^(FHResponse *failed) {
+        NSLog(@"Unified Push registration Error: %@", failed.error);
     }];
+    
+
 }
 
 // Callback called after failing to register with APNS

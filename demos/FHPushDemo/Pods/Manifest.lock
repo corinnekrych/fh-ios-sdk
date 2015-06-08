@@ -1,24 +1,34 @@
 PODS:
-  - AeroGear-Push (1.0.0)
+  - AeroGear-Push (1.1.0-beta.1)
   - ASIHTTPRequest/Core (1.8.2):
     - Reachability
   - FH (2.2.8):
-    - AeroGear-Push (= 1.0.0)
+    - AeroGear-Push
     - ASIHTTPRequest/Core (= 1.8.2)
     - Reachability (= 3.2)
   - Reachability (3.2)
 
 DEPENDENCIES:
+  - AeroGear-Push (from `git@github.com:corinnekrych/aerogear-ios-push.git`, branch
+    `plist.configurable`)
   - FH (from `../../`)
 
 EXTERNAL SOURCES:
+  AeroGear-Push:
+    :branch: plist.configurable
+    :git: git@github.com:corinnekrych/aerogear-ios-push.git
   FH:
     :path: "../../"
 
+CHECKOUT OPTIONS:
+  AeroGear-Push:
+    :commit: 78bfb425c3aad08598f7c79553f3773dede1cf3e
+    :git: git@github.com:corinnekrych/aerogear-ios-push.git
+
 SPEC CHECKSUMS:
-  AeroGear-Push: 2476533f5c2fc1b29e61555ef7c61ac4238a4620
+  AeroGear-Push: 4237fc49dfdc798e5a81ae6e42172d5731eb0bdc
   ASIHTTPRequest: ec013992946676b7978dcbde6396d57312d21db4
-  FH: ffa2968fbafc47d69ed266bffdee890f03c00796
+  FH: cb61e08df4a47d908c06b6ab589a680366f78e0f
   Reachability: 33e18b67625424e47b6cde6d202dce689ad7af96
 
-COCOAPODS: 0.37.1
+COCOAPODS: 0.37.2

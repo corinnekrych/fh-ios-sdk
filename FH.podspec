@@ -14,5 +14,6 @@ Pod::Spec.new do |s|
   s.libraries = 'xml2', 'z'
   s.dependency 'ASIHTTPRequest/Core', '1.8.2'
   s.dependency 'Reachability', '3.2'
-  s.dependency 'AeroGear-Push', '1.0.0'
+  # to be with fixed version once PR merged in master + 1.1.0-beta2 is pushed to cocoapods
+  s.dependency 'AeroGear-Push'
 end

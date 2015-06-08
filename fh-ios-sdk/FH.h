@@ -206,4 +206,8 @@ or use the getDefaultParamsAsHeaders method to add them as HTTP request headers.
 + (void)verifyAuthSessionWithSuccess:(void (^)(BOOL valid))sucornil
                           AndFailure:(void (^)(id failed))failornil;
 
++(void)pushRegister:(NSData*)deviceToken
+         AndSuccess:(void (^)(FHResponse *success))sucornil
+         AndFailure:(void (^)(FHResponse *failed))failornil;
+
 @end

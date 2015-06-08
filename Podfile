@@ -4,7 +4,8 @@ xcodeproj 'fh-ios-sdk.xcodeproj'
 platform :ios, '7.0'
 
 pod 'ASIHTTPRequest/Core', '1.8.2'
-pod 'AeroGear-Push', '1.0.0'
+# tobe removed once PR merged in master + 1.1.0-beta2 is pushed to cocoapods
+pod 'AeroGear-Push', :git => 'git@github.com:corinnekrych/aerogear-ios-push.git', :branch => 'plist.configurable' 
 
 target 'FHTests', :exclusive => true do
     pod 'ASIHTTPRequest/Core', '1.8.2'

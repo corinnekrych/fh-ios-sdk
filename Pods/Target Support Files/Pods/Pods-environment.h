@@ -15,7 +15,7 @@
 // AeroGear-Push
 #define COCOAPODS_POD_AVAILABLE_AeroGear_Push
 #define COCOAPODS_VERSION_MAJOR_AeroGear_Push 1
-#define COCOAPODS_VERSION_MINOR_AeroGear_Push 0
+#define COCOAPODS_VERSION_MINOR_AeroGear_Push 1
 #define COCOAPODS_VERSION_PATCH_AeroGear_Push 0
 
 // Reachability

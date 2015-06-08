@@ -32,56 +32,101 @@ static AGDeviceRegistration* sharedInstance;
 @implementation AGDeviceRegistration {
     NSURL *_baseURL;
     NSURLSession *_session;
+    NSString* _configFile;
 }
 
 -(id) initWithServerURL:(NSURL *)url {
     self = [super init];
     if (self) {
         _baseURL = url;
-
+        
         // initialize session
         NSURLSessionConfiguration *sessionConfig =
-            [NSURLSessionConfiguration defaultSessionConfiguration];
-
+        [NSURLSessionConfiguration defaultSessionConfiguration];
+        
         _session = [NSURLSession sessionWithConfiguration:sessionConfig delegate:self delegateQueue:[NSOperationQueue mainQueue]];
-
+        
         sharedInstance = self;
     }
+    
+    return self;
+}
 
+-(id) init {
+    return[self initWithFile:nil];
+}
+
+-(id) initWithFile:(NSString*)configFile {
+    self = [super init];
+    if (self) {
+        // initialize session
+        NSURLSessionConfiguration *sessionConfig =
+        [NSURLSessionConfiguration defaultSessionConfiguration];
+        
+        _session = [NSURLSession sessionWithConfiguration:sessionConfig delegate:self delegateQueue:[NSOperationQueue mainQueue]];
+        _configFile = configFile;
+        sharedInstance = self;
+    }
+    
     return self;
 }
 
 -(void)registerWithClientInfo:(void (^)(id<AGClientDeviceInformation>))clientInfo
                       success:(void (^)(void))success
                       failure:(void (^)(NSError *))failure {
-
+    
     // can't proceed with no configuration block set
     NSParameterAssert(clientInfo);
-
+    
     // default impl:
     AGClientDeviceInformationImpl *clientInfoObject = [[AGClientDeviceInformationImpl alloc] init];
     // pass the object in:
     clientInfo(clientInfoObject);
-
+    
+    // Get config file
+    
+    // Check if config is available in plist file
+    if (clientInfoObject.variantID == nil && [self configValueForKey:@"variantID"] != nil) {
+        clientInfoObject.variantID = [self configValueForKey:@"variantID"];
+    }
+    
+    if (clientInfoObject.variantSecret == nil && [self configValueForKey:@"variantSecret"] != nil) {
+        clientInfoObject.variantSecret = [self configValueForKey:@"variantSecret"];
+    }
+    
+    if (_baseURL == nil && [self configValueForKey:@"serverURL"] != nil) {
+        NSURL* url = [[NSURL alloc] initWithString: [self configValueForKey:@"serverURL"]];
+        if (url) {
+            _baseURL = url;
+        } else {
+            NSAssert(_baseURL.absoluteString != nil, @"'serverURL' should be set");
+        }
+    }
+    
     NSAssert(clientInfoObject.deviceToken, @"'token' should be set");
     NSAssert(clientInfoObject.variantID, @"'variantID' should be set");
     NSAssert(clientInfoObject.variantSecret, @"'variantSecret' should be set");
-
+    
+    // locally stored information
+    [[NSUserDefaults standardUserDefaults] setObject: clientInfoObject.variantID forKey: @"variantID"];
+    [[NSUserDefaults standardUserDefaults] setObject: clientInfoObject.variantSecret forKey: @"variantSecret"];
+    [[NSUserDefaults standardUserDefaults] setObject: _baseURL.absoluteString forKey: @"serverURL"];
+    
     // set up our request
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[_baseURL URLByAppendingPathComponent:@"rest/registry/device"]];
     [request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
     [request setHTTPMethod:@"POST"];
-
+    
     // apply HTTP Basic:
     NSString *basicAuthCredentials = [NSString stringWithFormat:@"%@:%@", clientInfoObject.variantID, clientInfoObject.variantSecret];
     [request setValue:[NSString stringWithFormat:@"Basic %@",
                        [[basicAuthCredentials dataUsingEncoding:NSUTF8StringEncoding] base64EncodedStringWithOptions:0]]
-             forHTTPHeaderField:@"Authorization"];
-
+   forHTTPHeaderField:@"Authorization"];
+    
     // serialize request
     NSData *postData = [NSJSONSerialization dataWithJSONObject:[clientInfoObject extractValues] options:0 error:nil];
     [request setHTTPBody:postData];
-
+    
     // attempt to register
     NSURLSessionDataTask *task = [_session dataTaskWithRequest:request completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
         if (!error) {
@@ -90,27 +135,27 @@ static AGDeviceRegistration* sharedInstance;
                 if (success) {
                     success();
                 }
-
+                
             } else { // bad response (e.g. 401)
                 NSMutableDictionary *userInfo = [NSMutableDictionary dictionary];
                 [userInfo setValue:[NSHTTPURLResponse localizedStringForStatusCode:httpResp.statusCode] forKey:NSLocalizedDescriptionKey];
                 [userInfo setValue:request forKey:AGNetworkingOperationFailingURLRequestErrorKey];
                 [userInfo setValue:response forKey:AGNetworkingOperationFailingURLResponseErrorKey];
-
+                
                 error = [[NSError alloc] initWithDomain:AGPushErrorDomain code:NSURLErrorBadServerResponse userInfo:userInfo];
-
+                
                 if (failure) {
                     failure(error);
                 }
             }
-
+            
         } else { // an error has occured
             if (failure) {
                 failure(error);
             }
         }
     }];
-
+    
     [task resume];
 }
 
@@ -137,7 +182,7 @@ static AGDeviceRegistration* sharedInstance;
 willPerformHTTPRedirection:(NSHTTPURLResponse *)redirectResponse
         newRequest:(NSURLRequest *)redirectReq
  completionHandler:(void (^)(NSURLRequest *))completionHandler {
-
+    
     NSURLRequest *request = redirectReq;
     
     if (redirectResponse != nil) {  // we need to redirect
@@ -150,6 +195,25 @@ willPerformHTTPRedirection:(NSHTTPURLResponse *)redirectResponse
     }
     
     completionHandler(request);
+}
+
+#pragma mark - Utility methods
+
+- (NSString *) configValueForKey:(NSString *)key {
+    NSString* value;
+    if (_configFile) { // specified plist config file
+        NSString* path = [[NSBundle bundleForClass:[self class]] pathForResource:_configFile ofType:@"plist"];
+        NSMutableDictionary* properties = [NSMutableDictionary dictionaryWithContentsOfFile:path];
+        value = properties[key];
+    } else { // default plist file
+        value = [[NSBundle mainBundle] objectForInfoDictionaryKey:key];
+    }
+    
+    if ([value length] == 0) {
+        return nil;
+    } else {
+        return value;
+    }
 }
 
 @end

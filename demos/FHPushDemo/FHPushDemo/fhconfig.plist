@@ -12,5 +12,11 @@
         <string>appkeyhere</string>
         <key>connectiontag</key>
         <string>connectiontaghere</string>
+        <key>serverURL</key>
+        <string><# URL of the running AeroGear UnifiedPush Server #></string>
+        <key>variantID</key>
+        <string><# Variant ID #></string>
+        <key>variantSecret</key>
+        <string><# Variant Secret #></string>
     </dict>
 </plist>
