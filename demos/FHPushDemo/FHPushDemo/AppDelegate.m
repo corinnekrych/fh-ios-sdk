@@ -9,19 +9,10 @@
 
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    // when running under iOS 8 we will use the new API for APNS registration
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 80000
-    if ([application respondsToSelector:@selector(registerUserNotificationSettings:)]) {
-        UIUserNotificationSettings* notificationSettings = [UIUserNotificationSettings settingsForTypes:UIUserNotificationTypeAlert | UIUserNotificationTypeBadge | UIUserNotificationTypeSound categories:nil];
-        [[UIApplication sharedApplication] registerUserNotificationSettings:notificationSettings];
-        [[UIApplication sharedApplication] registerForRemoteNotifications];
-    } else {
-        [[UIApplication sharedApplication] registerForRemoteNotificationTypes: (UIRemoteNotificationTypeBadge | UIRemoteNotificationTypeSound | UIRemoteNotificationTypeAlert)];
-    }
+    // Enable push remote notification
+    [FH pushEnabledForRemoteNotification:application];
+    [FH sendMetricsWhenAppLaunched:launchOptions];
     
-#else
-    [[UIApplication sharedApplication] registerForRemoteNotificationTypes: (UIRemoteNotificationTypeBadge | UIRemoteNotificationTypeSound | UIRemoteNotificationTypeAlert)];
-#endif
     if (launchOptions[UIApplicationLaunchOptionsRemoteNotificationKey]) {
         if ([launchOptions[UIApplicationLaunchOptionsRemoteNotificationKey] isKindOfClass:[NSDictionary class]]) {
             NSLog(@"Was opened with notification:%@", launchOptions[UIApplicationLaunchOptionsRemoteNotificationKey]);
@@ -63,8 +54,6 @@
     } AndFailure:^(FHResponse *failed) {
         NSLog(@"Unified Push registration Error: %@", failed.error);
     }];
-    
-
 }
 
 // Callback called after failing to register with APNS
@@ -77,6 +66,8 @@
     NSNotification *notification = [NSNotification notificationWithName:@"message_received" object:[self pushMessageContent:userInfo]];
     [[NSNotificationCenter defaultCenter] postNotification:notification];
     NSLog(@"UPS message received: %@", userInfo);
+    // send metrics when the app is awaken from background due to push notification
+    [FH sendMetricsWhenAppAwoken:application.applicationState userInfo: userInfo];
 }
 
 - (NSString*)pushMessageContent:(NSDictionary *)userInfo {

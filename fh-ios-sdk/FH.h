@@ -205,9 +205,51 @@ or use the getDefaultParamsAsHeaders method to add them as HTTP request headers.
  */
 + (void)verifyAuthSessionWithSuccess:(void (^)(BOOL valid))sucornil
                           AndFailure:(void (^)(id failed))failornil;
-
+/**
+ Registers your mobile device to unified push server so it can start receiving messages.
+ Registration information are provided within fhconfig.plist file
+ containing the require registration information as below:
+ <plist version="1.0">
+     <dict>
+     <key>serverURL</key>
+     <string>pushServerURL e.g http(s)//host:port/context</string>
+     <key>variantID</key>
+     <string>variantID e.g. 1234456-234320</string>
+     <key>variantSecret</key>
+       <string>variantSecret e.g. 1234456-234320</string>
+       ...
+    </dict>
+ </plist>
+ @param deviceToken that would be posted to the server during the registration process to uniquely identify the device.
+ @param success A block object to be executed when the registration operation finishes successfully.
+ This block has no return value.
+ @param failure A block object to be executed when the registration operation finishes unsuccessfully.
+ This block has no return value and takes one argument: The FHResponse contains the `NSError` object describing
+ the error that occurred during the registration process.
+ */
 +(void)pushRegister:(NSData*)deviceToken
          AndSuccess:(void (^)(FHResponse *success))sucornil
          AndFailure:(void (^)(FHResponse *failed))failornil;
 
+/**
+ Register the app for APN push remote notification transparently for iOS7 and iOS8. This method should be called
+ in AppDelegate's `application:didFinishLaunchingWithOptions:` method.
+ @param application holds the message identifiers to record metrics.
+ */
++(void)pushEnabledForRemoteNotification:(UIApplication*)application;
+
+/**
+ Send metrics server side when the app is first launched due to a push notification.
+ @param launchOptions holds the message identifiers to record metrics.
+ */
++(void)sendMetricsWhenAppLaunched:(NSDictionary *)launchOptions;
+
+/**
+ Send metrics server sdide when the app is brought from background to
+ foreground due to a push notification.
+ @param applicationState used to check the app was in background.
+ @param userInfo holds the message identifiers to record metrics.
+ */
++ (void)sendMetricsWhenAppAwoken:(UIApplicationState) applicationState
+                         userInfo:(NSDictionary *)userInfo;
 @end
