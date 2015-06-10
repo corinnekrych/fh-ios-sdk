@@ -11,6 +11,7 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Enable push remote notification
     [FH pushEnabledForRemoteNotification:application];
+    // Send metrics to count when the app is opened due to a push notification
     [FH sendMetricsWhenAppLaunched:launchOptions];
     
     if (launchOptions[UIApplicationLaunchOptionsRemoteNotificationKey]) {
@@ -66,7 +67,7 @@
     NSNotification *notification = [NSNotification notificationWithName:@"message_received" object:[self pushMessageContent:userInfo]];
     [[NSNotificationCenter defaultCenter] postNotification:notification];
     NSLog(@"UPS message received: %@", userInfo);
-    // send metrics when the app is awaken from background due to push notification
+    // |send metrics when the app is awaken from background due to push notification
     [FH sendMetricsWhenAppAwoken:application.applicationState userInfo: userInfo];
 }
 

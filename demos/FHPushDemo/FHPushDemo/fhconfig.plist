@@ -3,20 +3,20 @@
 <plist>
     <dict>
         <key>host</key>
-        <string>hosthere</string>
+        <string>HostHere</string>
         <key>appid</key>
-        <string>appidhere</string>
+        <string>AppIdHere</string>
         <key>projectid</key>
-        <string>projectidhere</string>
+        <string>ProjectIdHere</string>
         <key>appkey</key>
-        <string>appkeyhere</string>
+        <string>AppKeyHere</string>
         <key>connectiontag</key>
-        <string>connectiontaghere</string>
+        <string>ConnectionTagHere</string>
         <key>serverURL</key>
-        <string>unifiedpushserverhere</string>
+        <string>UnifiedPushServerHere</string>
         <key>variantID</key>
-        <string>variantidghere</string>
+        <string>VariantIdgHere</string>
         <key>variantSecret</key>
-        <string>variantsecrethere</string>
+        <string>VariantSecretHere</string>
     </dict>
 </plist>
