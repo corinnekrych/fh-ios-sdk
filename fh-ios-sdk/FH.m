@@ -105,9 +105,19 @@ static Reachability *reachability;
 +(void)pushRegister:(NSData*)deviceToken
          AndSuccess:(void (^)(FHResponse *success))sucornil
          AndFailure:(void (^)(FHResponse *failed))failornil {
+    [self pushRegister:deviceToken withAlias:nil withCategories:nil AndSuccess:sucornil AndFailure:failornil];
+}
+
++(void)pushRegister:(NSData*)deviceToken
+          withAlias:(NSString*)alias
+     withCategories:(NSArray*)categories
+         AndSuccess:(void (^)(FHResponse *success))sucornil
+         AndFailure:(void (^)(FHResponse *failed))failornil {
     AGDeviceRegistration* registration = [[AGDeviceRegistration alloc] initWithFile:@"fhconfig"];
     [registration registerWithClientInfo:^(id<AGClientDeviceInformation> clientInfo) {
         [clientInfo setDeviceToken:deviceToken];
+        [clientInfo setAlias:alias];
+        [clientInfo setCategories:categories];
     } success:^{
         sucornil([[FHResponse alloc] init]);
     } failure:^(NSError *error) {
@@ -115,6 +125,18 @@ static Reachability *reachability;
         [resp setError:error];
         failornil(resp);
     }];
+}
+
++(void)setPushAlias:(NSString*)alias
+         AndSuccess:(void (^)(FHResponse *success))sucornil
+         AndFailure:(void (^)(FHResponse *failed))failornil {
+    [self pushRegister:nil withAlias:alias withCategories:nil AndSuccess:sucornil AndFailure:failornil];
+}
+
++(void)setPushCategories:(NSArray*)categories
+              AndSuccess:(void (^)(FHResponse *success))sucornil
+              AndFailure:(void (^)(FHResponse *failed))failornil {
+    [self pushRegister:nil withAlias:nil withCategories:categories AndSuccess:sucornil AndFailure:failornil];
 }
 
 +(void)sendMetricsWhenAppLaunched:(NSDictionary *)launchOptions {

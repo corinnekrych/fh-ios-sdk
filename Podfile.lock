@@ -6,17 +6,17 @@ PODS:
 
 DEPENDENCIES:
   - AeroGear-Push (from `git@github.com:corinnekrych/aerogear-ios-push.git`, branch
-    `plist.configurable`)
+    `objc.store.device.token`)
   - ASIHTTPRequest/Core (= 1.8.2)
 
 EXTERNAL SOURCES:
   AeroGear-Push:
-    :branch: plist.configurable
+    :branch: objc.store.device.token
     :git: git@github.com:corinnekrych/aerogear-ios-push.git
 
 CHECKOUT OPTIONS:
   AeroGear-Push:
-    :commit: 78bfb425c3aad08598f7c79553f3773dede1cf3e
+    :commit: 6b12e3f8a2f361693de5099bf28e3acde73d7611
     :git: git@github.com:corinnekrych/aerogear-ios-push.git
 
 SPEC CHECKSUMS:

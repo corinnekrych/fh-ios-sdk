@@ -216,7 +216,7 @@ or use the getDefaultParamsAsHeaders method to add them as HTTP request headers.
      <key>variantID</key>
      <string>variantID e.g. 1234456-234320</string>
      <key>variantSecret</key>
-       <string>variantSecret e.g. 1234456-234320</string>
+     <string>variantSecret e.g. 1234456-234320</string>
        ...
     </dict>
  </plist>
@@ -230,6 +230,38 @@ or use the getDefaultParamsAsHeaders method to add them as HTTP request headers.
 +(void)pushRegister:(NSData*)deviceToken
          AndSuccess:(void (^)(FHResponse *success))sucornil
          AndFailure:(void (^)(FHResponse *failed))failornil;
+/**
+ Registers your mobile device to unified push server so it can start receiving messages.
+ Registration information are provided within fhconfig.plist file
+ containing the require registration information as below:
+ <plist version="1.0">
+ <dict>
+ <key>serverURL</key>
+ <string>pushServerURL e.g http(s)//host:port/context</string>
+ <key>variantID</key>
+ <string>variantID e.g. 1234456-234320</string>
+ <key>variantSecret</key>
+ <string>variantSecret e.g. 1234456-234320</string>
+ ...
+ </dict>
+ </plist>
+ @param deviceToken that would be posted to the server during the registration process to uniquely identify the device.
+ @param alias is an unique string associated to device installation. ie: a username, phone number.
+ @param categories an array of caegories a client can register to.
+ @param success A block object to be executed when the registration operation finishes successfully.
+ This block has no return value.
+ @param failure A block object to be executed when the registration operation finishes unsuccessfully.
+ This block has no return value and takes one argument: The FHResponse contains the `NSError` object describing
+ the error that occurred during the registration process.
+ */
++(void)pushRegister:(NSData*)deviceToken
+         withAlias:(NSString*)alias
+     withCategories:(NSArray*)categories
+         AndSuccess:(void (^)(FHResponse *success))sucornil
+         AndFailure:(void (^)(FHResponse *failed))failornil;
+
++(void)setPushAlias:(NSString*)alias;
++(void)setPushCategories:(NSArray*)categories;
 
 /**
  Register the app for APN push remote notification transparently for iOS7 and iOS8. This method should be called
