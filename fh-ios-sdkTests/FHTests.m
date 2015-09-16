@@ -40,7 +40,7 @@ float TEST_TIMEOUT = 5.0;
     [FH initWithSuccess:success AndFailure:failure];
     [self waitForExpectationsWithTimeout:TEST_TIMEOUT handler:^(NSError *error) {
         if (error) {
-            XCTAssertTrue(false == true, @"Init failed within timeout");
+            XCTAssertTrue(false, @"Init failed within timeout");
             NSLog(@"Timeout Error: %@", error);
         }
     }];
@@ -72,7 +72,7 @@ float TEST_TIMEOUT = 5.0;
         [cloudExpectation fulfill];
     } AndFailure:^(FHResponse * actFailRes){
         NSLog(@"Failed to read tweets. Response = %@", actFailRes.rawResponse);
-        XCTAssertTrue(false == true, @"Cloud request failed");
+        XCTAssertTrue(false, @"Cloud request failed");
         [cloudExpectation fulfill];
     }];
     [self waitForExpectationsWithTimeout:TEST_TIMEOUT handler:^(NSError *error) {
@@ -96,7 +96,7 @@ float TEST_TIMEOUT = 5.0;
         XCTAssertTrue(actRes.rawResponseAsString != nil, @"Cloud request should return response text as string");
         [cloudExpectation fulfill];
     } AndFailure:^(FHResponse * actFailRes){
-        XCTAssertTrue(false == true, @"Cloud request should not fail with plaintext response");
+        XCTAssertTrue(false, @"Cloud request should not fail with plaintext response");
         [cloudExpectation fulfill];
     }];
     [self waitForExpectationsWithTimeout:TEST_TIMEOUT handler:^(NSError *error) {
@@ -136,7 +136,7 @@ float TEST_TIMEOUT = 5.0;
     
     XCTestExpectation *cloudExpectation = [self expectationWithDescription:@"testCloudPlaintextResponse"];
     [action execAsyncWithSuccess:^(FHResponse * actRes){
-        XCTAssertTrue(false == true, @"Cloud request should fail on http error");
+        XCTAssertTrue(false, @"Cloud request should fail on http error");
         [cloudExpectation fulfill];
     } AndFailure:^(FHResponse * actFailRes){
         XCTAssertTrue(actFailRes != nil, @"Cloud request should return some failure");
@@ -161,7 +161,7 @@ float TEST_TIMEOUT = 5.0;
     [authRequest authWithPolicyId:@"MyFeedHenryPolicy" UserId:@"user" Password:@"pass"];
     void (^success)(FHResponse *)=^(FHResponse * res){
         [authExpectation fulfill];
-        XCTAssertTrue(true == false, @"Failed auth request should fail");
+        XCTAssertTrue(false, @"Failed auth request should fail");
         NSLog(@"parsed response %@ type=%@",res.parsedResponse,[res.parsedResponse class]);
     };
     void (^failure)(FHResponse *)=^(FHResponse* res){
@@ -195,7 +195,7 @@ float TEST_TIMEOUT = 5.0;
     };
     void (^failure)(FHResponse *)=^(FHResponse* res){
         [authExpectation fulfill];
-        XCTAssertTrue(true == false, @"Successful auth request should succeed");
+        XCTAssertTrue(false, @"Successful auth request should succeed");
         NSLog(@"parsed response %@ type=%@",res.parsedResponse,[res.parsedResponse class]);
     };
     [authRequest execAsyncWithSuccess:success AndFailure:failure];
