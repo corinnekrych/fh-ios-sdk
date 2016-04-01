@@ -7,6 +7,9 @@ xcode_sdk: iphonesimulator
 before_install:
     - gem install cocoapods obcd slather -N --no-rdoc --no-ri --no-document --quiet
 
+script:
+	- xcodebuild -workspace FH.xcworkspace -scheme FH -sdk iphonesimulator build test
+
 notifications:
   irc: "irc.freenode.org#feedhenry"
 
